@@ -1,0 +1,6 @@
+[class*=#{$namespace}]{
+  font-family: $font-family;
+  box-sizing: border-box;
+  font-size: $font-size;
+  color: $secondary;
+}

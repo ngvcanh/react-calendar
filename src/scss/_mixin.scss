@@ -1,0 +1,46 @@
+@mixin full-size {
+  width: 100%;
+  height: 100%;
+}
+
+@mixin align-center {
+  display: flex;
+  align-items: center;
+}
+
+@mixin justify-center {
+  display: flex;
+  justify-content: center;
+}
+
+@mixin flex-center {
+  @include justify-center();
+  align-items: center;
+}
+
+@mixin align-start {
+  display: flex;
+  align-items: flex-start;
+}
+
+@mixin justify-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+@mixin justify-end {
+  display: flex;
+  justify-items: flex-end;
+}
+
+@mixin ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+@mixin flex-ellipsis {
+  @include align-center();
+  @include ellipsis();
+  @include full-size();
+}

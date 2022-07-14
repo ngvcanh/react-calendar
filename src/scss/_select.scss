@@ -1,0 +1,10 @@
+.#{$namespace}{
+
+  &-#{$class-select}{
+    border: 1px solid $border-color;
+    height: $base-row-height;
+    border-radius: $border-radius;
+    cursor: pointer;
+  }
+
+}

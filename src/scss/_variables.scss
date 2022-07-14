@@ -1,0 +1,27 @@
+@use "sass:math";
+
+// GLOBAL
+$namespace: 'KenSoniCalendar';
+$class-popover: 'Popover';
+$class-select: 'Select';
+$class-icon-button: 'IconButton';
+
+// ROOT
+$font-family: "Roboto", 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+$font-size: 14px;
+$border-radius: 0;
+$text-padding: 8px;
+$box-padding: 16px;
+
+// BASE
+$base-row-height: 36px;
+$base-icon-size: 32px;
+$base-icon-fontsize: 16px;
+$base-z-index: 1350;
+
+// COLORS
+$primary: #1825aa;
+$success: #069549;
+$secondary: #353535;
+$error: #EB0029;
+$border-color: rgba(153,153,153,0.4);
