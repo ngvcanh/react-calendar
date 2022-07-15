@@ -1,0 +1,28 @@
+.#{$namespace}{
+
+  &-#{$class-scrollbar}{
+    @include full-size();
+    display: block;
+    position: relative;
+    overflow: hidden;
+
+    &-view{
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: scroll;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    &-horizontal{
+      &-track{
+        position: absolute;
+        height: 6;
+      }
+      
+    }
+  }
+
+}
