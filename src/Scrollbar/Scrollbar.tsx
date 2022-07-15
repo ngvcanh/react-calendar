@@ -1,30 +1,18 @@
 import React, {
   CSSProperties,
   forwardRef,
-  HTMLAttributes,
   MutableRefObject,
   PropsWithChildren,
   useEffect,
-  useRef,
   useState
 } from "react";
+import { ScrollbarCommonProps, ScrollbarProps, ScrollbarRef } from "./types";
 import { CSS_CLASS_SCROLLBAR } from "../helpers";
-import { Property } from 'csstype';
-import mergeClass from "../helpers/mergeClass";
+import View, { ScrollbarViewProps } from "./View";
 import merge from 'lodash/merge';
-import isString from 'lodash/isString';
-import useScrollbarWidth from "./useScrollbarWidth";
-
-export interface ScrollbarRef extends HTMLDivElement{}
-
-export interface ScrollbarProps extends HTMLAttributes<HTMLDivElement>{
-  autoHeight?: boolean;
-  autoHeightMin?: Property.MinHeight;
-  autoHeightMax?: Property.MaxHeight;
-  universal?: boolean;
-  autoHide?: boolean;
-  autoHideDuration?: number;
-}
+import Track from "./Track";
+import mergeClass from "../helpers/mergeClass";
+import useScrollbar from "./useScrollbar";
 
 const Scrollbar = forwardRef<ScrollbarRef, PropsWithChildren<ScrollbarProps>>(
   (props, ref) => {
@@ -39,26 +27,57 @@ const Scrollbar = forwardRef<ScrollbarRef, PropsWithChildren<ScrollbarProps>>(
       style,
       autoHide,
       autoHideDuration = 200,
+      hideTracksWhenNotNeeded,
+      onScroll,
+      onScrollFrame,
+      onUpdate,
       ...rest
     } = props;
 
-    const sbRef = useRef<HTMLDivElement>(null);
+    const {
+      viewRef,
+      scrollbarRef,
+      horizontalThumbRef,
+      horizontalTrackRef,
+      verticalThumbRef,
+      verticalTrackRef,
+      update,
+      getValues
+    } = useScrollbar(props);
 
-    const [ didMountUniversal ] = useState(false);
+    const [ didMountUniversal ] = useState(universal);
 
     useEffect(() => {
       if (ref){
-        (ref as MutableRefObject<ScrollbarRef>).current = sbRef.current!;
-      }
+        (ref as MutableRefObject<ScrollbarRef>).current = merge({}, scrollbarRef.current, {
+          getScrollLeft(){
+            return viewRef.current?.scrollLeft ?? 0;
+          },
+          getScrollTop(){
+            return viewRef.current?.scrollTop ?? 0;
+          },
+          getScrollWidth(){
+            return viewRef.current?.scrollWidth ?? 0;
+          },
+          getScrollHeight(){
+            return viewRef.current?.scrollHeight ?? 0;
+          },
+          getClientWidth(){
+            return viewRef.current?.clientWidth ?? 0;
+          },
+          getClientHeight(){
+            return viewRef.current?.clientHeight ?? 0;
+          },
+          getValues: getValues
+        });
+      }console.log('hahaha')
+      update();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const { getScrollbarWidth } = useScrollbarWidth();
+    const sbClass = mergeClass(CSS_CLASS_SCROLLBAR, className);
 
-    const sbClass = mergeClass(CSS_CLASS_SCROLLBAR);
-    const scrollbarClass = mergeClass(CSS_CLASS_SCROLLBAR, className);
-
-    const containerStyle: CSSProperties = merge({}, style, {
+    const containerStyle: CSSProperties = merge(style, {
       ...(autoHeight && {
         height: 'auto',
         minHeight: autoHeightMin,
@@ -66,60 +85,40 @@ const Scrollbar = forwardRef<ScrollbarRef, PropsWithChildren<ScrollbarProps>>(
       })
     });
 
-    const scrollbarWidth = getScrollbarWidth();
+    const trackProps: ScrollbarCommonProps = {
+      autoHide,
+      autoHideDuration,
+      universal,
+      didMountUniversal
+    }
 
-    const viewStyle: CSSProperties = merge({
-      marginRight: scrollbarWidth ? -scrollbarWidth : 0,
-      marginBottom: scrollbarWidth ? -scrollbarWidth : 0,
+    const viewProps: ScrollbarViewProps = merge({}, trackProps, {
+      autoHeight,
+      autoHeightMin,
+      autoHeightMax
+    })
 
-      ...(autoHeight && {
-        position: 'relative',
-        top: 'auto',
-        left: 'auto',
-        right: 'auto',
-        bottom: 'auto',
-        minHeight: isString(autoHeightMin)
-          ? `calc(${autoHeightMin} + ${scrollbarWidth}px)`
-          : (autoHeightMin ?? 0) + scrollbarWidth,
-        maxHeight: isString(autoHeightMax)
-          ? `calc(${autoHeightMax} + ${scrollbarWidth}px)`
-          : (autoHeightMax ?? 0) + scrollbarWidth,
-
-        ...(universal && !didMountUniversal && {
-          minHeight: autoHeightMin,
-          maxHeight: autoHeightMax
-        })
-      }),
-
-      ...(universal && !didMountUniversal && {
-        overflow: 'hidden',
-        marginRight: 0,
-        marginBottom: 0,
-      })
-    });
-
-    const trackHorizontalStyle = {
-      ...(autoHide && trackAutoHeightStyle),
-      ...((!scrollbarWidth || (universal && !didMountUniversal)) && {
-          display: 'none'
-      })
-    };
-
-    return <div
-      { ...rest }
-      ref={ sbRef }
-      className={ scrollbarClass }
+    return <div 
+      { ...rest } 
+      ref={ scrollbarRef } 
+      className={ sbClass } 
       style={ containerStyle }
     >
-      <div className={ sbClass + '-view' } style={ viewStyle }>
+      <View { ...viewProps } ref={ viewRef }>
         { children }
-      </div>
-      <div className={ sbClass + '-horizontal-track' }>
-        <div className={ sbClass + '-horizontal-thumb' } />
-      </div>
-      <div className={ sbClass + '-vertical-track' }>
-        <div className={ sbClass + 'vertical-thumb' } />
-      </div>
+      </View>
+      <Track 
+        { ...trackProps } 
+        variant="horizontal" 
+        ref={ horizontalTrackRef } 
+        thumbRef={ horizontalThumbRef } 
+      />
+      <Track 
+        { ...trackProps } 
+        variant="vertical" 
+        ref={ verticalTrackRef } 
+        thumbRef={ verticalThumbRef }
+      />
     </div>
 
   }

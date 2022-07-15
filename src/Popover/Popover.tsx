@@ -13,10 +13,13 @@ import React, {
 import { createPortal } from "react-dom";
 import { CalendarConsumer } from "../Context";
 import { CSS_CLASS_POPOVER } from "../helpers/constant";
+import Transition, { TransitionStatus } from 'react-transition-group/Transition';
 import useOnClickOutside, { ClickOutsideEvent } from "../useOnClickOutside";
-import mergeClass from "../helpers/mergeClass";
 import isUndefinded from 'lodash/isUndefined';
+import mergeClass from "../helpers/mergeClass";
 import merge from 'lodash/merge';
+import CSSTransition from 'react-transition-group/CSSTransition';
+import TransitionGroup from 'react-transition-group/TransitionGroup';
 
 export interface PopoverRef extends HTMLDivElement{}
 
@@ -51,6 +54,8 @@ const Popover = forwardRef<PopoverRef, PropsWithChildren<PopoverProps>>(
     const [ popWidth, setPopWidth ] = useState(width);
     const [ popHeight, setPopHeight ] = useState(height);
     const popRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const popResetRef = useRef(false);
 
     useEffect(() => {
       open === isOpen || setIsOpen(open);
@@ -58,11 +63,53 @@ const Popover = forwardRef<PopoverRef, PropsWithChildren<PopoverProps>>(
     }, [ open ]);
 
     useEffect(() => {
+      isOpen ? resetShow() : resetHide();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ isOpen ]);
+
+    useEffect(() => {
+      isOpen ? resetShow() : resetHide();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ popWidth, popHeight ]);
+
+    useEffect(() => {
       if (ref){
         (ref as MutableRefObject<PopoverRef>).current = popRef.current!;
       }
+
+      resetShow();
+
+      return () => {
+        resetHide();
+      }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    const resetShow = () => {
+      if (containerRef.current){
+        const { innerWidth, innerHeight } = window;
+
+        if (!popWidth || !popHeight){
+          const { scrollWidth, scrollHeight } = containerRef.current;
+
+          setPopWidth(scrollWidth);
+          setPopHeight(scrollHeight);
+        }
+        else if (popWidth > innerWidth - 32 || popHeight > innerHeight - 32){
+          setPopWidth(innerWidth - 32);
+          setPopHeight(innerHeight - 32);
+        }
+      }
+    }
+
+    const resetHide = () => {
+      popResetRef.current = false;
+
+      if (containerRef.current){
+        containerRef.current.style.width = '';
+        containerRef.current.style.height = '';
+      }
+    }
 
     useOnClickOutside(popRef, e => {
       setIsOpen(false);
@@ -105,21 +152,37 @@ const Popover = forwardRef<PopoverRef, PropsWithChildren<PopoverProps>>(
     !isUndefinded(popWidth) && popWidth > 0 && merge(popCss, { width: popWidth });
     !isUndefinded(popHeight) && popHeight > 0 && merge(popCss, { height: popHeight });
 
+    const transitionStyles: Record<TransitionStatus, CSSProperties> = {
+      entering: { width: popWidth, height: popHeight },
+      entered:  { width: popWidth, height: popHeight },
+      exiting:  { width: '', height: '' },
+      exited:  { width: '', height: '' },
+      unmounted: {}
+    };
+
     return <CalendarConsumer>
       {() => {
         if (!isOpen) return null;
 
         return createPortal(
-          <div
-            { ...rest }
-            style={ merge({}, style, popCss) }
-            ref={ popRef }
-            className={ boxClass }
-          >
-            <div className={ popClass + '-container' }>
-              { children }
-            </div>
-          </div>,
+
+          <TransitionGroup>
+            <CSSTransition timeout={ 500 } classNames="transition">
+              <div
+                { ...rest }
+                style={ merge({}, style, popCss) }
+                ref={ popRef }
+                className={ boxClass }
+              >
+                <div 
+                  className={ popClass + '-container' } 
+                  ref={ containerRef }
+                >
+                  { children }
+                </div>
+              </div>
+            </CSSTransition>
+          </TransitionGroup>,
           document.body
         )
       }}

@@ -19,9 +19,27 @@
     &-horizontal{
       &-track{
         position: absolute;
-        height: 6;
+        height: 6px;
       }
       
+      &-thumb{
+        position: relative;
+        display: block;
+        height: 100%;
+      }
+    }
+
+    &-vertical{
+      &-track{
+        position: absolute;
+        width: 6px;
+      }
+
+      &-thumb{
+        position: relative;
+        display: block;
+        width: 100%;
+      }
     }
   }
 
