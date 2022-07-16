@@ -1,1 +1,0 @@
-function l(l){var t=l.current||{},i=t.scrollLeft,o=void 0===i?0:i,c=t.scrollTop,e=void 0===c?0:c,r=t.scrollWidth,d=void 0===r?0:r,h=t.scrollHeight,n=void 0===h?0:h,s=t.clientWidth,v=void 0===s?0:s,f=t.clientHeight,g=void 0===f?0:f;return{left:o/(d-v)||0,top:e/(n-g)||0,scrollLeft:o,scrollTop:e,scrollWidth:d,scrollHeight:n,clientWidth:v,clientHeight:g}}export{l as getValues};

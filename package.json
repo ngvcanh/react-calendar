@@ -2,9 +2,9 @@
   "name": "@kensoni/react-calendar",
   "version": "0.1.0",
   "private": true,
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts",
+  "main": "./index.js",
+  "module": "./index.esm.js",
+  "types": "./index.d.ts",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
@@ -37,9 +37,9 @@
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
     "pkg": "copyfiles -f \"./package.json\" \"./dist\"",
-    "prepack": "yarn build && yarn pkg",
-    "prepublishOnly": "yarn build && yarn pkg",
-    "prepare": "yarn build && yarn pkg"
+    "prepack": "yarn build",
+    "prepublishOnly": "yarn build",
+    "prepare": "yarn build"
   },
   "eslintConfig": {
     "extends": [

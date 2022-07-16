@@ -1,1 +1,0 @@
-import{i as r}from"./isUndefined-9db4dc0d.js";import{_ as s,i as e,a as t}from"./merge-818d5aef.js";import i from"./cssProperty.js";var o=s,a=e,n=t;var f=function(r){return"string"==typeof r||!a(r)&&n(r)&&"[object String]"==o(r)};function m(s,e,t){if(f(e))r(t)?s.style.cssText=e:i(s,e,t);else for(var o in e)e.hasOwnProperty(o)&&i(s,o,e[o])}export{f as i,m as s};

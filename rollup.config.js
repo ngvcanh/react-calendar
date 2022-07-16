@@ -53,7 +53,7 @@ const configs = {
     commonjs(),
     typescript({ tsconfig: './tsconfig.json' }),
     scss({
-      output: 'dist/style.css',
+      output: './style.css',
       failOnError: true,
       outputStyle: "compressed",
       include: ["src/**/*.scss"],
