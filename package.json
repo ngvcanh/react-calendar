@@ -38,7 +38,8 @@
     "build-storybook": "build-storybook -s public",
     "pkg": "copyfiles -f \"./package.json\" \"./dist\"",
     "prepack": "yarn build && yarn pkg",
-    "prepublishOnly": "yarn build && yarn pkg"
+    "prepublishOnly": "yarn build && yarn pkg",
+    "prepare": "yarn build && yarn pkg"
   },
   "eslintConfig": {
     "extends": [
