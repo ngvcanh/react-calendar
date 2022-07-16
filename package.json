@@ -102,8 +102,5 @@
     "storybook-dark-mode": "^1.1.0",
     "style-loader": "^3.3.1",
     "webpack": "^5.73.0"
-  },
-  "files": [
-    "dist/*"
-  ]
+  }
 }
