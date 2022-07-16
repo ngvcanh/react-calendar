@@ -1,3 +1,5 @@
+import './scss/index.scss';
+
 export * from './helpers';
 export * from './locales';
 export * from './Popover';
