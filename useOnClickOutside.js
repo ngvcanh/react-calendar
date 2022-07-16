@@ -1,0 +1,1 @@
+import{useEffect as t}from"react";function e(e,n){t((function(){var t=function(t){e.current&&!e.current.contains(t.target)&&n(t)};return document.addEventListener("mousedown",t),document.addEventListener("touchstart",t),function(){document.removeEventListener("mousedown",t),document.removeEventListener("touchstart",t)}}),[e,n])}export{e as default};

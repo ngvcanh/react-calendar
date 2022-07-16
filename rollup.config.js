@@ -43,7 +43,7 @@ const configs = {
     {
       // file: './dist/index.esm.js',
       format: 'es',
-      dir: 'dist'
+      dir: '.'
       // exports: "named",
     }
   ],
